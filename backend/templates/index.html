@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Task Tracker BI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>Task Tracker</h1>
+
+    <!-- Add Task -->
+    <form action="/add" method="post">
+        <input type="text" name="name" placeholder="Task Name" required>
+        <input type="text" name="day" placeholder="Day (Monday-Sunday)" required>
+        <input type="text" name="user" placeholder="User Name" required>
+        <button type="submit">Add Task</button>
+    </form>
+
+    <!-- Task Table -->
+    <h2>Task Table</h2>
+    <table border="1" id="taskTable">
+        <thead>
+            <tr>
+                <th>ID / User</th>
+                <th>Task Name</th>
+                <th>Status</th>
+                <th>Day</th>
+                <th>Last Updated</th>
+                <th>Move</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <!-- Summary Chart -->
+    <h2>Task Summary (Status Count)</h2>
+    <canvas id="statusChart" width="400" height="150"></canvas>
+
+<script>
+// Fetch tasks from server
+async function loadTasks() {
+    const res = await fetch('/tasks');
+    const tasks = await res.json();
+    const tbody = document.querySelector('#taskTable tbody');
+    tbody.innerHTML = '';
+
+    const statusCounts = {'Backlog': 0, 'In Progress': 0, 'Done': 0};
+
+    tasks.forEach(task => {
+        statusCounts[task.status]++;
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${task.id} / ${task.user}</td>
+            <td contenteditable="true" onblur="updateTask(${task.id}, this.innerText)">${task.name}</td>
+            <td>${task.status}</td>
+            <td>${task.day}</td>
+            <td>${task.updated_at}</td>
+            <td>
+                ${task.status !== 'Done' ? `<a href="/move/${task.id}/In Progress">Move →</a>` : ''}
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+
+    updateChart(statusCounts);
+}
+
+// Update task name inline
+async function updateTask(taskId, newName) {
+    await fetch(`/update/${taskId}`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({name: newName})
+    });
+}
+
+// Chart.js
+let chart;
+function updateChart(statusCounts) {
+    const ctx = document.getElementById('statusChart').getContext('2d');
+    const data = {
+        labels: ['Backlog', 'In Progress', 'Done'],
+        datasets: [{
+            label: 'Tasks by Status',
+            data: [statusCounts['Backlog'], statusCounts['In Progress'], statusCounts['Done']],
+            backgroundColor: ['#f8d7da','#fff3cd','#d4edda']
+        }]
+    };
+
+    if(chart) {
+        chart.data.datasets[0].data = data.datasets[0].data;
+        chart.update();
+    } else {
+        chart = new Chart(ctx, {type:'bar', data:data});
+    }
+}
+
+// Refresh every 2 seconds
+setInterval(loadTasks, 2000);
+loadTasks();
+</script>
+</body>
+</html>
