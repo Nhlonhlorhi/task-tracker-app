@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Weekly Report · Task Tracker{% endblock %}
+{% block content %}
+<h2>Weekly Report ({{ start.strftime("%Y-%m-%d") }} → {{ end.strftime("%Y-%m-%d") }})</h2>
+
+<div class="card">
+  <div class="stats">
+    <div class="stat"><div class="label">Hours Worked</div><div class="value">{{ hours_worked }}</div></div>
+    <div class="stat"><div class="label">Tasks Created</div><div class="value">{{ tasks_total }}</div></div>
+    <div class="stat"><div class="label">Tasks Done</div><div class="value">{{ tasks_done }}</div></div>
+    <div class="stat"><div class="label">Completion %</div><div class="value">{{ completion_rate }}%</div></div>
+    <div class="stat"><div class="label">Rating</div><div class="value">{{ rating }} / 5</div></div>
+  </div>
+</div>
+
+<div class="card">
+  <h3>Recent Tasks</h3>
+  {% if recent_tasks %}
+  <ul class="list">
+    {% for t in recent_tasks %}
+      <li>#{{ t.id }} — {{ t.title }} ({{ t.status }}) · {{ t.day }} · {{ t.created_at }}</li>
+    {% endfor %}
+  </ul>
+  {% else %}
+    <p class="muted">No tasks created this week.</p>
+  {% endif %}
+</div>
+
+<div class="card">
+  <h3>Auto Summary</h3>
+  <p>
+    This week you logged <strong>{{ hours_worked }}</strong> hour(s), created <strong>{{ tasks_total }}</strong> task(s),
+    and completed <strong>{{ tasks_done }}</strong> task(s), for a completion rate of <strong>{{ completion_rate }}%</strong>.
+    Your overall performance rating is <strong>{{ rating }}/5</strong>.
+  </p>
+</div>
+{% endblock %}

@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Task Tracker</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --success: #4cc9f0;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --warning: #ffb800;
+            --danger: #f72585;
+        }
+        
+        body {
+            background-color: #f5f7fb;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .card {
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border: none;
+            margin-bottom: 20px;
+        }
+        
+        .card-header {
+            background-color: white;
+            border-bottom: 1px solid #eaeaea;
+            font-weight: 600;
+            padding: 15px 20px;
+            border-radius: 12px 12px 0 0 !important;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--secondary);
+            border-color: var(--secondary);
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .task-item {
+            border-left: 4px solid var(--primary);
+            transition: all 0.3s ease;
+        }
+        
+        .task-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .task-high {
+            border-left-color: var(--danger);
+        }
+        
+        .task-medium {
+            border-left-color: var(--warning);
+        }
+        
+        .task-low {
+            border-left-color: var(--success);
+        }
+        
+        .timeslot {
+            background-color: #e9ecef;
+            border-radius: 4px;
+            padding: 5px;
+            margin: 2px;
+            font-size: 0.8rem;
+        }
+        
+        .timeslot.busy {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .report-card {
+            background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
+            color: white;
+            border-radius: 12px;
+        }
+        
+        .progress {
+            height: 8px;
+            border-radius: 4px;
+        }
+        
+        .dropdown-menu {
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border: none;
+            padding: 10px;
+        }
+        
+        .dropdown-item {
+            border-radius: 6px;
+            padding: 8px 12px;
+            margin: 3px 0;
+        }
+        
+        .dropdown-item:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .action-btn {
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-tasks me-2"></i>TaskTracker Pro
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#"><i class="fas fa-home me-1"></i> Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><i class="fas fa-calendar me-1"></i> Timesheet</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><i class="fas fa-chart-line me-1"></i> Reports</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><i class="fas fa-users me-1"></i> Team</a>
+                    </li>
+                </ul>
+                <div class="d-flex align-items-center">
+                    <div class="dropdown">
+                        <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" id="dropdownUser" data-bs-toggle="dropdown">
+                            <div class="user-avatar">JD</div>
+                            <div class="me-2">
+                                <div class="fw-bold">John Doe</div>
+                                <small class="text-muted">Admin</small>
+                            </div>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i> Profile</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i> Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container py-4">
+        <div class="row">
+            <!-- Left Column -->
+            <div class="col-lg-8">
+                <!-- Task List -->
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span><i class="fas fa-list-check me-2"></i>Task List</span>
+                        <button class="btn btn-sm btn-primary"><i class="fas fa-plus me-1"></i> Add Task</button>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>User</th>
+                                        <th>Task</th>
+                                        <th>Priority</th>
+                                        <th>Duration</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>101</td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="user-avatar" style="background-color: #4361ee;">JD</div>
+                                                <div>John Doe</div>
+                                            </div>
+                                        </td>
+                                        <td>Design Homepage</td>
+                                        <td><span class="badge bg-danger">High</span></td>
+                                        <td>3.5h</td>
+                                        <td><span class="badge bg-warning">In Progress</span></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary action-btn"><i class="fas fa-edit"></i></button>
+                                            <button class="btn btn-sm btn-outline-danger action-btn"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>102</td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="user-avatar" style="background-color: #3a0ca3;">AS</div>
+                                                <div>Alice Smith</div>
+                                            </div>
+                                        </td>
+                                        <td>API Integration</td>
+                                        <td><span class="badge bg-warning">Medium</span></td>
+                                        <td>5.0h</td>
+                                        <td><span class="badge bg-success">Completed</span></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary action-btn"><i class="fas fa-edit"></i></button>
+                                            <button class="btn btn-sm btn-outline-danger action-btn"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>103</td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="user-avatar" style="background-color: #7209b7;">RJ</div>
+                                                <div>Robert Johnson</div>
+                                            </div>
+                                        </td>
+                                        <td>Database Optimization</td>
+                                        <td><span class="badge bg-info">Low</span></td>
+                                        <td>2.0h</td>
+                                        <td><span class="badge bg-secondary">Pending</span></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary action-btn"><i class="fas fa-edit"></i></button>
+                                            <button class="btn btn-sm btn-outline-danger action-btn"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Weekly Timesheet -->
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-calendar me-2"></i>Weekly Timesheet
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-4">
+                            <button class="btn btn-outline-primary"><i class="fas fa-chevron-left me-1"></i> Previous</button>
+                            <h5 class="mb-0">August 21 - August 27, 2025</h5>
+                            <button class="btn btn-outline-primary">Next <i class="fas fa-chevron-right ms-1"></i></button>
+                        </div>
+                        
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>User / Day</th>
+                                        <th>Mon<br>21</th>
+                                        <th>Tue<br>22</th>
+                                        <th>Wed<br>23</th>
+                                        <th>Thu<br>24</th>
+                                        <th>Fri<br>25</th>
+                                        <th>Sat<br>26</th>
+                                        <th>Sun<br>27</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="user-avatar" style="background-color: #4361ee;">JD</div>
+                                                <div>John Doe</div>
+                                            </div>
+                                        </td>
+                                        <td><div class="timeslot busy">3.5h</div></td>
+                                        <td><div class="timeslot busy">6.0h</div></td>
+                                        <td><div class="timeslot busy">4.0h</div></td>
+                                        <td><div class="timeslot busy">7.5h</div></td>
+                                        <td><div class="timeslot busy">5.0h</div></td>
+                                        <td><div class="timeslot">-</div></td>
+                                        <td><div class="timeslot">-</div></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="user-avatar" style="background-color: #3a0ca3;">AS</div>
+                                                <div>Alice Smith</div>
+                                            </div>
+                                        </td>
+                                        <td><div class="timeslot busy">8.0h</div></td>
+                                        <td><div class="timeslot busy">7.5h</div></td>
+                                        <td><div class="timeslot busy">6.0h</div></td>
+                                        <td><div class="timeslot busy">8.0h</div></td>
+                                        <td><div class="timeslot busy">4.5h</div></td>
+                                        <td><div class="timeslot">-</div></td>
+                                        <td><div class="timeslot">-</div></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="user-avatar" style="background-color: #7209b7;">RJ</div>
+                                                <div>Robert Johnson</div>
+                                            </div>
+                                        </td>
+                                        <td><div class="timeslot busy">6.5h</div></td>
+                                        <td><div class="timeslot busy">5.0h</div></td>
+                                        <td><div class="timeslot busy">7.0h</div></td>
+                                        <td><div class="timeslot busy">4.5h</div></td>
+                                        <td><div class="timeslot busy">8.0h</div></td>
+                                        <td><div class="timeslot">-</div></td>
+                                        <td><div class="timeslot">-</div></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="col-lg-4">
+                <!-- Weekly Report -->
+                <div class="card report-card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title text-white"><i class="fas fa-chart-pie me-2"></i>Weekly Performance Report</h5>
+                        <h6 class="text-white">John Doe - Week 34</h6>
+                        
+                        <div class="mt-4">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>Tasks Completed</span>
+                                <span>12/15</span>
+                            </div>
+                            <div class="progress mb-3 bg-white">
+                                <div class="progress-bar bg-success" style="width: 80%"></div>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>Time Utilization</span>
+                                <span>32/40h</span>
+                            </div>
+                            <div class="progress mb-3 bg-white">
+                                <div class="progress-bar bg-info" style="width: 85%"></div>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>On-time Delivery</span>
+                                <span>90%</span>
+                            </div>
+                            <div class="progress mb-3 bg-white">
+                                <div class="progress-bar bg-warning" style="width: 90%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <h6 class="text-white">Performance Rating: <span class="float-end">8.5/10</span></h6>
+                            <p class="text-white">John exceeded expectations this week with high task completion and excellent time management.</p>
+                        </div>
+                        
+                        <button class="btn btn-light w-100 mt-3"><i class="fas fa-download me-2"></i>Download Full Report</button>
+                    </div>
+                </div>
+
+                <!-- Add New Task -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <i class="fas fa-plus-circle me-2"></i>Add New Task
+                    </div>
+                    <div class="card-body">
+                        <form>
+                            <div class="mb-3">
+                                <label class="form-label">Task Title</label>
+                                <input type="text" class="form-control" placeholder="Enter task title">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Assigned To</label>
+                                <select class="form-select">
+                                    <option selected>Select user</option>
+                                    <option>John Doe</option>
+                                    <option>Alice Smith</option>
+                                    <option>Robert Johnson</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Priority</label>
+                                <select class="form-select">
+                                    <option>High</option>
+                                    <option selected>Medium</option>
+                                    <option>Low</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Estimated Duration (hours)</label>
+                                <input type="number" class="form-control" min="0.5" step="0.5" placeholder="2.5">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Description</label>
+                                <textarea class="form-control" rows="3"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">Create Task</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-bolt me-2"></i>Quick Actions
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-outline-primary"><i class="fas fa-file-export me-2"></i>Export Data</button>
+                            <button class="btn btn-outline-success"><i class="fas fa-envelope me-2"></i>Send Report</button>
+                            <button class="btn btn-outline-danger"><i class="fas fa-trash-alt me-2"></i>Clear Completed</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Sample JavaScript functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Delete button functionality
+            const deleteButtons = document.querySelectorAll('.btn-outline-danger');
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const taskRow = this.closest('tr');
+                    if (confirm('Are you sure you want to delete this task?')) {
+                        taskRow.style.opacity = '0';
+                        setTimeout(() => {
+                            taskRow.remove();
+                        }, 300);
+                    }
+                });
+            });
+
+            // Simulate generating a weekly report
+            const generateReport = () => {
+                alert('Weekly report generated successfully! You can now view and download it.');
+            };
+
+            // Set up the weekly report button
+            const reportButton = document.querySelector('.btn-light');
+            if (reportButton) {
+                reportButton.addEventListener('click', generateReport);
+            }
+        });
+    </script>
+</body>
+</html>

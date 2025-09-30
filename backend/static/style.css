@@ -1,39 +1,56 @@
-body {
-    font-family: Arial, sans-serif;
-    margin: 20px;
+/* Put this CSS into static/style.css (paste exact) */
+:root{
+  --bg:#0b1220; --panel:#121b2d; --muted:#8aa0c5; --text:#e9efff; --primary:#4f8cff;
+  --ok:#21c27a; --warn:#ffb54f; --danger:#ff5d6c; --chip:#1b2742; --border:#1f2a44;
 }
-
-h1, h2 {
-    text-align: center;
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; background:linear-gradient(180deg,#0a1020 0%, #0e1730 100%);
+  color:var(--text); font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
 }
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-th, td {
-    padding: 8px;
-    text-align: left;
-}
-
-th {
-    background-color: #f2f2f2;
-}
-
-.task {
-    font-weight: bold;
-}
-
-/* Colour code by status */
-.Backlog {
-    background-color: #f8d7da;
-}
-
-.In\ Progress {
-    background-color: #fff3cd;
-}
-
-.Done {
-    background-color: #d4edda;
-}
+.container{max-width:1100px;margin:32px auto;padding:0 16px}
+.muted{color:var(--muted)}
+.row{display:flex;gap:8px}
+.grow{flex:1}
+.nav{border-bottom:1px solid var(--border); background:rgba(8,12,24,.6); backdrop-filter: blur(6px); position:sticky; top:0; z-index:10}
+.nav-inner{max-width:1100px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;justify-content:space-between}
+.brand{font-weight:700;color:var(--text);text-decoration:none}
+.links{display:flex;gap:16px;align-items:center}
+.links a{color:var(--text);text-decoration:none;opacity:.9}
+.links a:hover{opacity:1}
+.hello{color:var(--muted)}
+.btn{background:var(--primary);color:#fff;border:none;border-radius:10px;padding:10px 14px;cursor:pointer}
+.btn:hover{filter:brightness(1.05)}
+.btn-outline{background:transparent;border:1px solid var(--primary);color:var(--text)}
+.icon-btn{background:transparent;border:none;cursor:pointer;font-size:16px}
+.card{background:linear-gradient(180deg,#0d1528, #0e1730);border:1px solid var(--border); border-radius:16px; padding:16px; box-shadow:0 4px 24px rgba(0,0,0,.25); margin-bottom:16px}
+.card.narrow{max-width:420px;margin:24px auto}
+label{display:block;margin:8px 0;color:var(--muted)}
+input,select{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:#0c1528;color:var(--text)}
+.flash-stack{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.flash{padding:10px 12px;border-radius:10px;border:1px solid var(--border)}
+.flash.success{border-color:#1c8a55;background:#0e241a}
+.flash.info{border-color:#2b5ea7;background:#0e1a2b}
+.flash.warning{border-color:#a77b2b;background:#2b1f0e}
+.flash.danger{border-color:#a72b3c;background:#2b0e13}
+.kanban{display:grid; grid-template-columns: repeat(3, 1fr); gap:16px}
+.col{background:var(--panel); border:1px solid var(--border); border-radius:16px; overflow:hidden}
+.col-head{padding:12px 16px; font-weight:700; background:#101a2e; border-bottom:1px solid var(--border)}
+.col-body{padding:12px 12px 4px}
+.task{border:1px solid var(--border);border-radius:14px;padding:12px;margin-bottom:10px;background:#0b1428}
+.task-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.task-title{font-weight:600}
+.task-meta{display:flex;gap:12px;color:var(--muted);font-size:13px;margin-top:4px}
+.task-actions{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chip{background:var(--chip);border:1px solid var(--border);color:var(--text);border-radius:100px;padding:6px 10px;cursor:pointer}
+.chip:hover{filter:brightness(1.1)}
+.timesheet-grid{display:grid;grid-template-columns: 200px 1fr 120px; gap:0}
+.ts-head,.ts-foot{background:#101a2e; border:1px solid var(--border); padding:10px; font-weight:700}
+.ts-cell{border:1px solid var(--border); padding:10px}
+.ts-list{margin:0;padding-left:16px}
+.stats{display:grid;grid-template-columns: repeat(5, minmax(120px,1fr)); gap:12px}
+.stat{background:#0b1428;border:1px solid var(--border);border-radius:14px;padding:12px}
+.stat .label{color:var(--muted);font-size:12px}
+.stat .value{font-size:22px;font-weight:700;margin-top:4px}
+@media (max-width: 900px){ .kanban{grid-template-columns:1fr} .stats{grid-template-columns:1fr 1fr} }

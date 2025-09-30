@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Dashboard · Task Tracker{% endblock %}
+{% block content %}
+<h2>My Kanban</h2>
+
+<div class="card">
+  <form class="row" method="POST" action="{{ url_for('task_add') }}">
+    <input class="grow" type="text" name="title" placeholder="New task title..." required>
+    <select name="day" required>
+      <option value="" disabled selected>Day</option>
+      <option>Monday</option><option>Tuesday</option><option>Wednesday</option>
+      <option>Thursday</option><option>Friday</option><option>Saturday</option><option>Sunday</option>
+    </select>
+    <button class="btn" type="submit">Add</button>
+  </form>
+</div>
+
+<div class="kanban">
+  {% for col in ["todo","inprogress","done"] %}
+  <section class="col">
+    <header class="col-head">
+      {% if col=="todo" %}To Do{% elif col=="inprogress" %}In Progress{% else %}Done{% endif %}
+    </header>
+    <div class="col-body">
+      {% for t in tasks if t.status==col %}
+      <article class="task">
+        <div class="task-top">
+          <div class="task-title">#{{ t.id }} — {{ t.title }}</div>
+          <form method="POST" action="{{ url_for('task_delete', task_id=t.id) }}" onsubmit="return confirm('Delete this task?')">
+            <button class="icon-btn" title="Delete">🗑️</button>
+          </form>
+        </div>
+        <div class="task-meta">
+          <span>Assigned: <strong>{{ t.username }}</strong></span>
+          <span>Day: {{ t.day }}</span>
+        </div>
+        <div class="task-actions">
+          <form method="POST" action="{{ url_for('task_move', task_id=t.id, status='todo') }}"><button class="chip">To Do</button></form>
+          <form method="POST" action="{{ url_for('task_move', task_id=t.id, status='inprogress') }}"><button class="chip">In Progress</button></form>
+          <form method="POST" action="{{ url_for('task_move', task_id=t.id, status='done') }}"><button class="chip">Done</button></form>
+          <form method="POST" action="{{ url_for('timer_start', task_id=t.id) }}"><button class="chip">Start</button></form>
+          <form method="POST" action="{{ url_for('timer_stop', task_id=t.id) }}"><button class="chip">Stop</button></form>
+        </div>
+      </article>
+      {% else %}
+        <p class="muted">No tasks here.</p>
+      {% endfor %}
+    </div>
+  </section>
+  {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Timesheet · Task Tracker{% endblock %}
+{% block content %}
+<h2>Timesheet ({{ start.strftime("%Y-%m-%d") }} → {{ end.strftime("%Y-%m-%d") }})</h2>
+
+<div class="card">
+  <div class="timesheet-grid">
+    <div class="ts-head">Day</div>
+    <div class="ts-head">Entries</div>
+    <div class="ts-head">Total (h)</div>
+
+    {% for d in days %}
+    <div class="ts-cell"><strong>{{ d }}</strong></div>
+    <div class="ts-cell">
+      {% if per_day[d] %}
+        <ul class="ts-list">
+          {% for e in per_day[d] %}
+            <li>
+              {{ e['title'] }} —
+              {{ e['start_time'] }}{% if e['end_time'] %} → {{ e['end_time'] }}{% else %} (running){% endif %}
+              {% if e['duration_minutes'] %} ({{ (e['duration_minutes']/60)|round(2) }} h){% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <span class="muted">No time logged</span>
+      {% endif %}
+    </div>
+    <div class="ts-cell">
+      {{ (totals[d]/60)|round(2) }}
+    </div>
+    {% endfor %}
+
+    <div class="ts-foot">Week Total</div>
+    <div class="ts-foot"></div>
+    <div class="ts-foot"><strong>{{ (week_total/60)|round(2) }} h</strong></div>
+  </div>
+</div>
+{% endblock %}
